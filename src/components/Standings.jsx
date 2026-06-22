@@ -7,10 +7,11 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
 
   const totals = profiles.map(p => {
     let total = p.bonus_points || 0
-    let played = p.bonus_played || 0
+    const finishedCount = matches.filter(m => m.state === "finished").length
+    let played = (p.bonus_played || 0) + finishedCount
     matches.forEach(m => {
       const pk = picks[p.id]?.[m.id]
-      if (pk && m.score_a !== null) { total += calcPts(pk.pick_a, pk.pick_b, m.score_a, m.score_b); played++ }
+      if (pk && m.score_a !== null) { total += calcPts(pk.pick_a, pk.pick_b, m.score_a, m.score_b) }
     })
     return { ...p, total, played }
   }).sort((a, b) => b.total - a.total || (a.display_name||"").localeCompare(b.display_name||""))
