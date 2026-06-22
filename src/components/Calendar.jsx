@@ -95,10 +95,10 @@ export default function Calendar({ days, myPicks, onPicksSaved, userId }) {
                       {!isLocked && (
                         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                           <span style={{ fontSize:24 }}>{m.flag_a}</span>
-                          <input type="number" min="0" max="20" value={curA} placeholder="0" onChange={e => setInput(m.id,"a",e.target.value)}
+                          <input type="number" min="0" max="20" inputMode="numeric" pattern="[0-9]*" value={curA} placeholder="0" onChange={e => setInput(m.id,"a",e.target.value)}
                             style={{ width:48, textAlign:"center", fontSize:20, fontWeight:700, padding:"7px 2px", border:"1px solid #ddd", borderRadius:10, background:"#fafafa", color:"#111", minHeight:42 }} />
                           <span style={{ fontSize:18, color:"#ccc" }}>–</span>
-                          <input type="number" min="0" max="20" value={curB} placeholder="0" onChange={e => setInput(m.id,"b",e.target.value)}
+                          <input type="number" min="0" max="20" inputMode="numeric" pattern="[0-9]*" value={curB} placeholder="0" onChange={e => setInput(m.id,"b",e.target.value)}
                             style={{ width:48, textAlign:"center", fontSize:20, fontWeight:700, padding:"7px 2px", border:"1px solid #ddd", borderRadius:10, background:"#fafafa", color:"#111", minHeight:42 }} />
                           <span style={{ fontSize:24 }}>{m.flag_b}</span>
                           {myPick && <span style={{ fontSize:12, color:"#22c55e" }}>✓</span>}
