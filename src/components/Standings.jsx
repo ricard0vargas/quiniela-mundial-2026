@@ -20,17 +20,19 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
 
   return (
     <div style={{ background:"#fff", border:"1px solid #e5e5e5", borderRadius:16, overflow:"hidden" }}>
-      <div style={{ display:"grid", gridTemplateColumns:"28px 44px 1fr 36px 36px 22px", gap:5, padding:"8px 12px", fontSize:10, color:"#999", textTransform:"uppercase", letterSpacing:"0.06em", background:"#fafafa", borderBottom:"1px solid #e5e5e5" }}>
-        <div>#</div><div></div><div>Jugador</div><div style={{textAlign:"center"}}>PJ</div><div style={{textAlign:"center"}}>Pts</div><div></div>
+      <div style={{ display:"grid", gridTemplateColumns:"28px 44px 1fr 40px 40px 40px", gap:5, padding:"8px 12px", fontSize:10, color:"#999", textTransform:"uppercase", letterSpacing:"0.06em", background:"#fafafa", borderBottom:"1px solid #e5e5e5" }}>
+        <div>#</div><div></div><div>Jugador</div><div style={{textAlign:"center"}}>PJ</div><div style={{textAlign:"center"}}>Pts</div><div style={{textAlign:"center"}}>Dif</div>
       </div>
       {totals.map((p, i) => {
         const isMe = currentProfile?.id === p.id
+        const leader = totals[0]
+        const diff = p.total - leader.total
         const isExp = expanded === p.id
         const pos = i + 1
         return (
           <div key={p.id}>
             <div onClick={() => setExpanded(isExp ? null : p.id)}
-              style={{ display:"grid", gridTemplateColumns:"28px 44px 1fr 36px 36px 22px", gap:5, padding:"10px 12px", alignItems:"center", borderBottom:"1px solid #f0f0f0", cursor:"pointer", background:isMe||isExp?"#fafafa":"#fff" }}>
+              style={{ display:"grid", gridTemplateColumns:"28px 44px 1fr 40px 40px 40px", gap:5, padding:"10px 12px", alignItems:"center", borderBottom:"1px solid #f0f0f0", cursor:"pointer", background:isMe||isExp?"#fafafa":"#fff" }}>
               <div style={{ textAlign:"center", fontSize:13, fontWeight:700, color:"#999" }}>{pos}</div>
               <Avatar profile={p} size={34} />
               <div style={{ minWidth:0 }}>
