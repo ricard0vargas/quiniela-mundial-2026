@@ -3,7 +3,7 @@ import Avatar from "./Avatar.jsx"
 import { calcPts } from "../lib/supabase.js"
 
 export default function Standings({ profiles, matches, picks, currentProfile }) {
-  const [expanded, setExpanded] = useState(null)
+  const [expanded, setExpanded] = useState({})
 
   const totals = profiles.map(p => {
     let total = p.bonus_points || 0
@@ -27,7 +27,7 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
         const isMe = currentProfile?.id === p.id
         const leader = totals[0]
         const diff = p.total - leader.total
-        const isExp = expanded === p.id
+        const isExp = expanded[p.id] ?? false
         const pos = i + 1
         return (
           <div key={p.id}>
@@ -47,7 +47,7 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
             </div>
             {isExp && (
               <div style={{ padding:"8px 12px 12px", background:"#fafafa", borderBottom:"1px solid #f0f0f0" }}>
-                <div style={{ fontSize:11, color:"#999", marginBottom:8 }}>Pronosticos</div>
+                <div style={{ fontSize:11, color:"#999", marginBottom:8, textAlign:"center" }}>Pronosticos</div>
                 <div style={{ display:"grid", gridTemplateColumns:"repeat(2,minmax(0,1fr))", gap:5 }}>
                   {finished.map(m => {
                     const pk = picks[p.id]?.[m.id]
