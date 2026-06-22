@@ -111,7 +111,7 @@ export default function Main({ session, profile, onProfileUpdate }) {
               <span style={{ fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20,
                 background:featured.state==="live"?"#fef2f2":featured.state==="finished"?"#f0fdf4":"#eff6ff",
                 color:featured.state==="live"?"#b91c1c":featured.state==="finished"?"#166534":"#1e40af" }}>
-                {featured.state==="live" ? ("🔴 " + (featured.minute ? featured.minute + "min" : "EN VIVO")) : featured.state==="finished" ? "Finalizado" : featured.match_time}
+                {featured.state==="live" ? "🔴 EN VIVO" : featured.state==="finished" ? "Finalizado" : featured.match_time}
               </span>
             </div>
             <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4, flex:1, minWidth:0 }}>
