@@ -1,4 +1,5 @@
-﻿import { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
+import { supabase } from "../lib/supabase.js"
 
 export default function Groups() {
   const [groups, setGroups] = useState([])
@@ -6,16 +7,19 @@ export default function Groups() {
   const [openGroup, setOpenGroup] = useState("Group A")
 
   useEffect(() => {
-    fetch("https://api.football-data.org/v4/competitions/WC/standings", {
-      headers: { "X-Auth-Token": "36ccc3b57a8e470997a9e1f1c6837370" }
-    })
-    .then(r => r.json())
-    .then(d => { setGroups(d.standings || []); setLoading(false) })
-    .catch(() => setLoading(false))
+    supabase.from("groups_standings").select("data").eq("id","current").single()
+      .then(({ data }) => {
+        if (data?.data) setGroups(data.data)
+        setLoading(false)
+      })
   }, [])
 
   if (loading) return (
     <div style={{ textAlign:"center", padding:"2rem", color:"#999", fontSize:13 }}>Cargando grupos...</div>
+  )
+
+  if (groups.length === 0) return (
+    <div style={{ textAlign:"center", padding:"2rem", color:"#999", fontSize:13 }}>Sin datos de grupos aun</div>
   )
 
   return (
@@ -28,13 +32,13 @@ export default function Groups() {
               style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 14px", background:"#fafafa", borderBottom:isOpen?"1px solid #e5e5e5":"none", cursor:"pointer", minHeight:48 }}>
               <div style={{ fontSize:14, fontWeight:700 }}>{g.group}</div>
               <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                <div style={{ fontSize:11, color:"#999" }}>{g.table.slice(0,2).map(t => t.team.tla).join(" · ")}</div>
+                <div style={{ fontSize:11, color:"#999" }}>{g.table.slice(0,2).map(t => t.team.tla).join(" - ")}</div>
                 <span style={{ fontSize:13, color:"#bbb" }}>{isOpen ? "▲" : "▼"}</span>
               </div>
             </div>
             {isOpen && (
               <div>
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 28px 28px 28px 28px 28px 32px", gap:4, padding:"6px 14px", fontSize:10, color:"#999", textTransform:"uppercase", letterSpacing:"0.05em", borderBottom:"1px solid #f0f0f0", background:"#fafafa" }}>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 28px 28px 28px 28px 28px 32px", gap:4, padding:"6px 14px", fontSize:10, color:"#999", textTransform:"uppercase", borderBottom:"1px solid #f0f0f0", background:"#fafafa" }}>
                   <div>Equipo</div>
                   <div style={{textAlign:"center"}}>PJ</div>
                   <div style={{textAlign:"center"}}>G</div>
