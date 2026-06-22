@@ -6,7 +6,8 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
   const [expanded, setExpanded] = useState(null)
 
   const totals = profiles.map(p => {
-    let total = 0, played = 0
+    let total = p.bonus_points || 0
+    let played = 0
     matches.forEach(m => {
       const pk = picks[p.id]?.[m.id]
       if (pk && m.score_a !== null) { total += calcPts(pk.pick_a, pk.pick_b, m.score_a, m.score_b); played++ }
@@ -36,7 +37,7 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
                 <div style={{ fontSize:13, fontWeight:700, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
                   {p.display_name||p.username}{isMe&&<span style={{ fontSize:10, color:"#999", marginLeft:4 }}>(tú)</span>}
                 </div>
-                <div style={{ fontSize:10, color:"#aaa" }}>@{p.username}</div>
+                <div style={{ fontSize:10, color:"#aaa" }}>@{p.username}{p.bonus_points>0?` · +${p.bonus_points} migración`:""}</div>
               </div>
               <div style={{ textAlign:"center", fontSize:12, color:"#666" }}>{p.played}</div>
               <div style={{ textAlign:"center", fontSize:15, fontWeight:700 }}>{p.total}</div>
@@ -45,6 +46,13 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
             {isExp && (
               <div style={{ padding:"8px 12px 12px", background:"#fafafa", borderBottom:"1px solid #f0f0f0" }}>
                 <div style={{ fontSize:11, color:"#999", marginBottom:8 }}>Pronósticos</div>
+                {p.bonus_points > 0 && (
+                  <div style={{ background:"#fff", border:"1px solid #e5e5e5", borderRadius:8, padding:"7px 9px", marginBottom:6 }}>
+                    <div style={{ fontSize:10, color:"#aaa", marginBottom:2 }}>⭐ Puntos de migración</div>
+                    <div style={{ fontSize:14, fontWeight:700 }}>{p.bonus_points} pts</div>
+                    <div style={{ fontSize:10, color:"#166534", marginTop:2 }}>Quiniela anterior</div>
+                  </div>
+                )}
                 <div style={{ display:"grid", gridTemplateColumns:"repeat(2,minmax(0,1fr))", gap:5 }}>
                   {finished.map(m => {
                     const pk = picks[p.id]?.[m.id]

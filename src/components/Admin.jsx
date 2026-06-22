@@ -1,4 +1,4 @@
-﻿import { useState } from "react"
+﻿import { useState, useEffect } from "react"
 import { supabase } from "../lib/supabase.js"
 
 export default function Admin({ matches, onMatchUpdated, isAdmin }) {
@@ -8,6 +8,28 @@ export default function Admin({ matches, onMatchUpdated, isAdmin }) {
   const [log, setLog] = useState([])
   const [saving, setSaving] = useState({})
   const [edits, setEdits] = useState({})
+  const [profiles, setProfiles] = useState([])
+  const [bonusEdits, setBonusEdits] = useState({})
+  const [bonusSaving, setBonusSaving] = useState({})
+
+  useEffect(() => {
+    if (authed) loadProfiles()
+  }, [authed])
+
+  async function loadProfiles() {
+    const { data } = await supabase.from("profiles").select("*").order("display_name")
+    setProfiles(data || [])
+  }
+
+  async function saveBonus(p) {
+    const val = parseInt(bonusEdits[p.id] ?? p.bonus_points ?? 0)
+    if (isNaN(val)) return
+    setBonusSaving(s => ({ ...s, [p.id]: true }))
+    await supabase.from("profiles").update({ bonus_points: val }).eq("id", p.id)
+    addLog(`Bonus de ${p.display_name||p.username}: ${p.bonus_points||0} → ${val} pts`)
+    await loadProfiles()
+    setBonusSaving(s => ({ ...s, [p.id]: false }))
+  }
 
   function setEdit(id, side, val) { setEdits(e => ({ ...e, [id]: { ...e[id], [side]: val } })) }
   function getEdit(id, side, fb) { return edits[id]?.[side] ?? fb }
@@ -63,6 +85,36 @@ export default function Admin({ matches, onMatchUpdated, isAdmin }) {
         <span style={{ fontSize:12, color:"#999" }}>🛡 Sesión admin activa</span>
         <button onClick={()=>setAuthed(false)} style={{ fontSize:12, padding:"5px 10px", border:"1px solid #ddd", borderRadius:8, cursor:"pointer", background:"#fff", color:"#b91c1c" }}>Salir</button>
       </div>
+
+      <div style={card}>
+        <div style={cardHead}>
+          <span style={{ fontSize:13, fontWeight:700 }}>🎯 Puntos de migración</span>
+          <span style={{ fontSize:10, color:"#999" }}>Puntos anteriores a la app</span>
+        </div>
+        <div style={{ padding:"4px 14px 10px" }}>
+          <div style={{ fontSize:11, color:"#999", padding:"8px 0" }}>
+            Asigná los puntos acumulados de la quiniela anterior a cada jugador registrado.
+          </div>
+          {profiles.length === 0 && <div style={{ fontSize:12, color:"#bbb", textAlign:"center", padding:"10px 0" }}>Sin jugadores registrados aún</div>}
+          {profiles.map(p => (
+            <div key={p.id} style={{ padding:"8px 0", borderBottom:"1px solid #f5f5f5", display:"flex", alignItems:"center", gap:10 }}>
+              <div style={{ flex:1 }}>
+                <div style={{ fontSize:13, fontWeight:700 }}>{p.display_name||p.username}</div>
+                <div style={{ fontSize:10, color:"#bbb" }}>@{p.username} · Bonus actual: {p.bonus_points||0} pts</div>
+              </div>
+              <input type="number" min="0" max="9999"
+                value={bonusEdits[p.id] ?? p.bonus_points ?? 0}
+                onChange={e => setBonusEdits(b => ({ ...b, [p.id]: e.target.value }))}
+                style={{ width:70, textAlign:"center", fontSize:16, fontWeight:700, padding:"6px 4px", border:"1px solid #ddd", borderRadius:8, background:"#fafafa", color:"#111", minHeight:38 }} />
+              <button onClick={() => saveBonus(p)} disabled={bonusSaving[p.id]}
+                style={{ padding:"7px 14px", fontSize:12, fontWeight:700, border:"1px solid #ddd", borderRadius:8, cursor:"pointer", background:"#fff", minHeight:38 }}>
+                {bonusSaving[p.id] ? "..." : "Guardar"}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div style={card}>
         <div style={cardHead}><span style={{ fontSize:13, fontWeight:700 }}>✏️ Corregir — próximos partidos</span><span style={{ fontSize:10, color:"#999" }}>Solo admin</span></div>
         <div style={{ padding:"4px 14px 10px" }}>
@@ -89,6 +141,7 @@ export default function Admin({ matches, onMatchUpdated, isAdmin }) {
           ))}
         </div>
       </div>
+
       <div style={card}>
         <div style={cardHead}><span style={{ fontSize:13, fontWeight:700 }}>✏️ Corregir — historial</span></div>
         <div style={{ padding:"4px 14px 10px" }}>
@@ -109,6 +162,7 @@ export default function Admin({ matches, onMatchUpdated, isAdmin }) {
           ))}
         </div>
       </div>
+
       <div style={card}>
         <div style={cardHead}><span style={{ fontSize:13, fontWeight:700 }}>📋 Log de cambios</span><span style={{ fontSize:10, color:"#999" }}>{log.length} cambio{log.length!==1?"s":""}</span></div>
         <div style={{ padding:"8px 14px" }}>
