@@ -1,4 +1,4 @@
-import { useState } from "react"
+ï»¿import { useState } from "react"
 import Avatar from "./Avatar.jsx"
 import { calcPts } from "../lib/supabase.js"
 
@@ -35,9 +35,9 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
               <Avatar profile={p} size={34} />
               <div style={{ minWidth:0 }}>
                 <div style={{ fontSize:13, fontWeight:700, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
-                  {p.display_name||p.username}{isMe&&<span style={{ fontSize:10, color:"#999", marginLeft:4 }}>(tú)</span>}
+                  {p.display_name||p.username}{isMe&&<span style={{ fontSize:10, color:"#999", marginLeft:4 }}>(tï¿½)</span>}
                 </div>
-                <div style={{ fontSize:10, color:"#aaa" }}>@{p.username}{p.bonus_points>0?` · +${p.bonus_points} migración`:""}</div>
+                <div style={{ fontSize:10, color:"#aaa" }}>@{p.username}{p.bonus_points>0?` ï¿½ +${p.bonus_points} migraciï¿½n`:""}</div>
               </div>
               <div style={{ textAlign:"center", fontSize:12, color:"#666" }}>{p.played}</div>
               <div style={{ textAlign:"center", fontSize:15, fontWeight:700 }}>{p.total}</div>
@@ -45,11 +45,11 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
             </div>
             {isExp && (
               <div style={{ padding:"8px 12px 12px", background:"#fafafa", borderBottom:"1px solid #f0f0f0" }}>
-                <div style={{ fontSize:11, color:"#999", marginBottom:8 }}>Pronósticos</div>
+                <div style={{ fontSize:11, color:"#999", marginBottom:8 }}>Pronï¿½sticos</div>
                 {p.bonus_points > 0 && (
                   <div style={{ background:"#fff", border:"1px solid #e5e5e5", borderRadius:8, padding:"7px 9px", marginBottom:6 }}>
-                    <div style={{ fontSize:10, color:"#aaa", marginBottom:2 }}>? Puntos de migración</div>
-                    <div style={{ fontSize:14, fontWeight:700 }}>{p.bonus_points} pts · {p.bonus_played} PJ</div>
+                    <div style={{ fontSize:10, color:"#aaa", marginBottom:2 }}>? Puntos de migraciï¿½n</div>
+                    <div style={{ fontSize:14, fontWeight:700 }}>{p.bonus_points} pts ï¿½ {p.bonus_played} PJ</div>
                     <div style={{ fontSize:10, color:"#166534", marginTop:2 }}>Quiniela anterior</div>
                   </div>
                 )}
@@ -62,7 +62,7 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
                     return (
                       <div key={m.id} style={{ background:"#fff", border:"1px solid #e5e5e5", borderRadius:8, padding:"7px 9px" }}>
                         <div style={{ fontSize:10, color:"#aaa", marginBottom:2 }}>{m.flag_a} vs {m.flag_b}</div>
-                        <div style={{ fontSize:14, fontWeight:700 }}>{pk.pick_a}–{pk.pick_b}</div>
+                        <div style={{ fontSize:14, fontWeight:700 }}>{pk.pick_a}ï¿½{pk.pick_b}</div>
                         <div style={{ fontSize:10, color:col, marginTop:2 }}>{pp!==null?`${pp} pts`:"-"}{pp===6?" ?":pp===4?" ?":""}</div>
                       </div>
                     )
@@ -72,7 +72,7 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
                     return (
                       <div key={m.id} style={{ background:"#fff", border:"1px solid #e5e5e5", borderRadius:8, padding:"7px 9px" }}>
                         <div style={{ fontSize:10, color:"#aaa", marginBottom:2 }}>{m.flag_a} vs {m.flag_b}</div>
-                        <div style={{ fontSize:14, fontWeight:700 }}>{pk.pick_a}–{pk.pick_b}</div>
+                        <div style={{ fontSize:14, fontWeight:700 }}>{pk.pick_a}ï¿½{pk.pick_b}</div>
                         <div style={{ fontSize:10, color:"#aaa", marginTop:2 }}>Pendiente</div>
                       </div>
                     )
