@@ -17,7 +17,12 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
 
   const finished = matches.filter(m => m.state === "finished")
 
-  const medal = (i) => i===0?"1o":i===1?"2o":i===2?"3o":`${i+1}`
+  const lbl = (i) => {
+    if (i===0) return 🥇
+    if (i===1) return 🥈
+    if (i===2) return 🥉
+    return `${i+1}`
+  }
 
   return (
     <div style={{ background:"#fff", border:"1px solid #e5e5e5", borderRadius:16, overflow:"hidden" }}>
@@ -27,12 +32,11 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
       {totals.map((p, i) => {
         const isMe = currentProfile?.id === p.id
         const isExp = expanded === p.id
-        const lbl = medal(i)
         return (
           <div key={p.id}>
             <div onClick={() => setExpanded(isExp ? null : p.id)}
               style={{ display:"grid", gridTemplateColumns:"28px 44px 1fr 36px 36px 22px", gap:5, padding:"10px 12px", alignItems:"center", borderBottom:"1px solid #f0f0f0", cursor:"pointer", background:isMe||isExp?"#fafafa":"#fff" }}>
-              <div style={{ textAlign:"center", fontSize:i<3?16:13, fontWeight:700, color:i===0?"#b7791f":i===1?"#718096":i===2?"#92400e":"#999" }}>{lbl}</div>
+              <div style={{ textAlign:"center", fontSize:13 }}>{lbl(i)}</div>
               <Avatar profile={p} size={34} />
               <div style={{ minWidth:0 }}>
                 <div style={{ fontSize:13, fontWeight:700, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
@@ -42,7 +46,7 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
               </div>
               <div style={{ textAlign:"center", fontSize:12, color:"#666" }}>{p.played}</div>
               <div style={{ textAlign:"center", fontSize:15, fontWeight:700 }}>{p.total}</div>
-              <div style={{ textAlign:"center", fontSize:11, color:"#aaa" }}>{isExp?"^":"v"}</div>
+              <div style={{ textAlign:"center", fontSize:11, color:"#aaa" }}>{isExp?"▲":"▼"}</div>
             </div>
             {isExp && (
               <div style={{ padding:"8px 12px 12px", background:"#fafafa", borderBottom:"1px solid #f0f0f0" }}>
