@@ -42,7 +42,7 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
                 <div style={{ fontSize:10, color:"#aaa" }}>@{p.username}</div>
               </div>
               <div style={{ textAlign:"center", fontSize:12, color:"#666" }}>{p.played}</div>
-              <div style={{ textAlign:"center", fontSize:15, fontWeight:700 }}>{p.total}</div>
+              <div style={{ textAlign:"center", fontSize:15, fontWeight:700 }}>{p.total}</div><div style={{ textAlign:"center", fontSize:12, color:i===0?"#166534":"#b91c1c", fontWeight:500 }}>{i===0?"-":String(p.total - totals[0].total)}</div>
               <div style={{ textAlign:"center", fontSize:11, color:"#aaa" }}>{isExp?"v":"v"}</div>
             </div>
             {isExp && (
