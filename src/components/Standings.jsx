@@ -72,7 +72,7 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
                       </div>
                     )
                   })}
-                  {matches.filter(m=>m.state!=="finished"&&picks[p.id]?.[m.id]).map(m => {
+                  {matches.filter(m=>m.state==="live"&&picks[p.id]?.[m.id]).map(m => {
                     const pk = picks[p.id][m.id]
                     return (
                       <div key={m.id} style={{ background:"#fff", border:"1px solid #e5e5e5", borderRadius:8, padding:"7px 9px" }}>
