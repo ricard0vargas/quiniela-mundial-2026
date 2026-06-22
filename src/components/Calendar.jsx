@@ -76,7 +76,7 @@ export default function Calendar({ days, myPicks, onPicksSaved, userId }) {
                   return (
                     <div key={m.id} style={{ padding:"12px 14px", borderBottom:"1px solid #f5f5f5" }}>
 
-                      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
+                      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
                         <div style={{ fontSize:13, fontWeight:700 }}>{m.flag_a} {m.team_a}</div>
                         <div style={{ textAlign:"center" }}>
                           <div style={{ fontSize:11, color:"#999" }}>{m.match_time}</div>
@@ -92,31 +92,32 @@ export default function Calendar({ days, myPicks, onPicksSaved, userId }) {
                       )}
 
                       {isLocked && myPick && (
-                        <div style={{ textAlign:"center" }}>
-                          <div style={{ fontSize:24, fontWeight:700, marginBottom:6 }}>
+                        <div style={{ position:"relative", textAlign:"center", paddingBottom:4 }}>
+                          <div style={{ fontSize:28, fontWeight:700, marginBottom:8 }}>
                             {myPick.pick_a} - {myPick.pick_b}
                           </div>
                           <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}>
-                            {pp !== null && (
-                              <span style={{ fontSize:12, fontWeight:700, padding:"3px 12px", borderRadius:20, background:ptBg(pp), color:ptCol(pp) }}>
+                            {pp !== null ? (
+                              <span style={{ fontSize:12, fontWeight:700, padding:"3px 14px", borderRadius:20, background:ptBg(pp), color:ptCol(pp) }}>
                                 {pp} pts{pp===6?" ⭐":pp===4?" ✓":""}
                               </span>
+                            ) : (
+                              <span style={{ fontSize:11, color:"#bbb" }}>Pendiente</span>
                             )}
-                            {pp === null && <span style={{ fontSize:11, color:"#bbb" }}>Pendiente</span>}
-                            <span style={{ fontSize:11, color:"#bbb" }}>🔒</span>
                           </div>
+                          <span style={{ position:"absolute", bottom:0, right:0, fontSize:14, color:"#ccc" }}>🔒</span>
                         </div>
                       )}
 
                       {!isLocked && (
-                        <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:12 }}>
+                        <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:14 }}>
                           <input type="number" min="0" max="20" inputMode="numeric" pattern="[0-9]*" value={curA} placeholder="0"
                             onChange={e => setInput(m.id,"a",e.target.value)}
-                            style={{ width:60, textAlign:"center", fontSize:24, fontWeight:700, padding:"8px 2px", border:"1px solid #ddd", borderRadius:10, background:"#fafafa", color:"#111", minHeight:50 }} />
-                          <span style={{ fontSize:20, color:"#ccc" }}>-</span>
+                            style={{ width:64, textAlign:"center", fontSize:26, fontWeight:700, padding:"8px 2px", border:"1px solid #ddd", borderRadius:12, background:"#fafafa", color:"#111", minHeight:52 }} />
+                          <span style={{ fontSize:22, color:"#ccc", fontWeight:300 }}>-</span>
                           <input type="number" min="0" max="20" inputMode="numeric" pattern="[0-9]*" value={curB} placeholder="0"
                             onChange={e => setInput(m.id,"b",e.target.value)}
-                            style={{ width:60, textAlign:"center", fontSize:24, fontWeight:700, padding:"8px 2px", border:"1px solid #ddd", borderRadius:10, background:"#fafafa", color:"#111", minHeight:50 }} />
+                            style={{ width:64, textAlign:"center", fontSize:26, fontWeight:700, padding:"8px 2px", border:"1px solid #ddd", borderRadius:12, background:"#fafafa", color:"#111", minHeight:52 }} />
                           {myPick && <span style={{ fontSize:14, color:"#22c55e" }}>✓</span>}
                         </div>
                       )}
