@@ -67,23 +67,22 @@ export default function Calendar({ days, myPicks, onPicksSaved, userId }) {
             </div>
             {isOpen && (
               <>
-                {day.matches.map((m, mi) => {
+                {day.matches.map((m) => {
                   const myPick = myPicks[m.id]
                   const isLocked = m.state !== "upcoming" || m.score_a !== null
                   const pp = myPick && m.score_a !== null ? calcPts(myPick.pick_a, myPick.pick_b, m.score_a, m.score_b) : null
                   const curA = isLocked ? null : (getInput(m.id,"a") !== "" ? getInput(m.id,"a") : myPick ? String(myPick.pick_a) : "")
                   const curB = isLocked ? null : (getInput(m.id,"b") !== "" ? getInput(m.id,"b") : myPick ? String(myPick.pick_b) : "")
                   return (
-                    <div key={m.id} style={{ padding:"11px 14px", borderBottom:"1px solid #f5f5f5" }}>
-                      <div style={{ marginBottom:10 }}>
-                        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:2 }}>
-                          <div style={{ fontSize:13, fontWeight:700 }}>{m.flag_a} {m.team_a}</div>
-                          <div style={{ textAlign:"center" }}>
-                            <div style={{ fontSize:11, color:"#999" }}>{m.match_time}</div>
-                            <div style={{ fontSize:10, color:"#bbb" }}>{m.group_name}</div>
-                          </div>
-                          <div style={{ fontSize:13, fontWeight:700 }}>{m.team_b} {m.flag_b}</div>
+                    <div key={m.id} style={{ padding:"12px 14px", borderBottom:"1px solid #f5f5f5" }}>
+
+                      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
+                        <div style={{ fontSize:13, fontWeight:700 }}>{m.flag_a} {m.team_a}</div>
+                        <div style={{ textAlign:"center" }}>
+                          <div style={{ fontSize:11, color:"#999" }}>{m.match_time}</div>
+                          <div style={{ fontSize:10, color:"#bbb" }}>{m.group_name}</div>
                         </div>
+                        <div style={{ fontSize:13, fontWeight:700 }}>{m.team_b} {m.flag_b}</div>
                       </div>
 
                       {isLocked && !myPick && (
@@ -93,14 +92,19 @@ export default function Calendar({ days, myPicks, onPicksSaved, userId }) {
                       )}
 
                       {isLocked && myPick && (
-                        <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:10 }}>
-                          <span style={{ fontSize:18, fontWeight:700 }}>{myPick.pick_a} - {myPick.pick_b}</span>
-                          {pp !== null && (
-                            <span style={{ fontSize:12, fontWeight:700, padding:"3px 10px", borderRadius:20, background:ptBg(pp), color:ptCol(pp) }}>
-                              {pp} pts{pp===6?" ⭐":pp===4?" ✓":""}
-                            </span>
-                          )}
-                          <span style={{ fontSize:11, color:"#bbb" }}>🔒</span>
+                        <div style={{ textAlign:"center" }}>
+                          <div style={{ fontSize:24, fontWeight:700, marginBottom:6 }}>
+                            {myPick.pick_a} - {myPick.pick_b}
+                          </div>
+                          <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}>
+                            {pp !== null && (
+                              <span style={{ fontSize:12, fontWeight:700, padding:"3px 12px", borderRadius:20, background:ptBg(pp), color:ptCol(pp) }}>
+                                {pp} pts{pp===6?" ⭐":pp===4?" ✓":""}
+                              </span>
+                            )}
+                            {pp === null && <span style={{ fontSize:11, color:"#bbb" }}>Pendiente</span>}
+                            <span style={{ fontSize:11, color:"#bbb" }}>🔒</span>
+                          </div>
                         </div>
                       )}
 
@@ -108,14 +112,15 @@ export default function Calendar({ days, myPicks, onPicksSaved, userId }) {
                         <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:12 }}>
                           <input type="number" min="0" max="20" inputMode="numeric" pattern="[0-9]*" value={curA} placeholder="0"
                             onChange={e => setInput(m.id,"a",e.target.value)}
-                            style={{ width:56, textAlign:"center", fontSize:22, fontWeight:700, padding:"8px 2px", border:"1px solid #ddd", borderRadius:10, background:"#fafafa", color:"#111", minHeight:46 }} />
-                          <span style={{ fontSize:18, color:"#ccc" }}>-</span>
+                            style={{ width:60, textAlign:"center", fontSize:24, fontWeight:700, padding:"8px 2px", border:"1px solid #ddd", borderRadius:10, background:"#fafafa", color:"#111", minHeight:50 }} />
+                          <span style={{ fontSize:20, color:"#ccc" }}>-</span>
                           <input type="number" min="0" max="20" inputMode="numeric" pattern="[0-9]*" value={curB} placeholder="0"
                             onChange={e => setInput(m.id,"b",e.target.value)}
-                            style={{ width:56, textAlign:"center", fontSize:22, fontWeight:700, padding:"8px 2px", border:"1px solid #ddd", borderRadius:10, background:"#fafafa", color:"#111", minHeight:46 }} />
-                          {myPick && <span style={{ fontSize:12, color:"#22c55e" }}>✓</span>}
+                            style={{ width:60, textAlign:"center", fontSize:24, fontWeight:700, padding:"8px 2px", border:"1px solid #ddd", borderRadius:10, background:"#fafafa", color:"#111", minHeight:50 }} />
+                          {myPick && <span style={{ fontSize:14, color:"#22c55e" }}>✓</span>}
                         </div>
                       )}
+
                     </div>
                   )
                 })}
