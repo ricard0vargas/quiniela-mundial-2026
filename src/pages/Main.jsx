@@ -5,6 +5,7 @@ import Standings from "../components/Standings.jsx"
 import Calendar from "../components/Calendar.jsx"
 import History from "../components/History.jsx"
 import Admin from "../components/Admin.jsx"
+import Groups from "../components/Groups.jsx"
 import ProfileEditor from "../components/ProfileEditor.jsx"
 
 export default function Main({ session, profile, onProfileUpdate }) {
@@ -67,8 +68,9 @@ export default function Main({ session, profile, onProfileUpdate }) {
     { id:"standings", icon:"🏆", label:"Tabla" },
     { id:"calendar", icon:"📅", label:"Pronósticos" },
     { id:"history", icon:"📋", label:"Historial" },
-    { id:"admin", icon:"🔒", label:"Admin" },
+    { id:"groups", icon:"🌍", label:"Grupos" },
   ]
+  if (profile.is_admin) NAV.push({ id:"admin", icon:"🔒", label:"Admin" })
 
   if (loading) return <div style={{ display:"flex", alignItems:"center", justifyContent:"center", height:"100dvh", fontSize:40 }}>⚽</div>
 
@@ -102,12 +104,14 @@ export default function Main({ session, profile, onProfileUpdate }) {
             </div>
             <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:5, flexShrink:0 }}>
               <div style={{ display:"flex", alignItems:"center", gap:5 }}>
-                <span style={{ fontSize:28, fontWeight:700 }}>{featured.score_a??"—"}</span>
-                <span style={{ fontSize:18, color:"#ccc" }}>–</span>
-                <span style={{ fontSize:28, fontWeight:700 }}>{featured.score_b??"—"}</span>
+                <span style={{ fontSize:28, fontWeight:700 }}>{featured.score_a??"-"}</span>
+                <span style={{ fontSize:18, color:"#ccc" }}>-</span>
+                <span style={{ fontSize:28, fontWeight:700 }}>{featured.score_b??"-"}</span>
               </div>
-              <span style={{ fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20, background:featured.state==="live"?"#fef2f2":featured.state==="finished"?"#f0fdf4":"#eff6ff", color:featured.state==="live"?"#b91c1c":featured.state==="finished"?"#166534":"#1e40af" }}>
-                {featured.state==="live"?("🔴 " + (featured.minute ? featured.minute + "min" : "EN VIVO")):featured.state==="finished"?"✓ Finalizado":featured.match_time}
+              <span style={{ fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20,
+                background:featured.state==="live"?"#fef2f2":featured.state==="finished"?"#f0fdf4":"#eff6ff",
+                color:featured.state==="live"?"#b91c1c":featured.state==="finished"?"#166534":"#1e40af" }}>
+                {featured.state==="live" ? ("🔴 " + (featured.minute ? featured.minute + "min" : "EN VIVO")) : featured.state==="finished" ? "Finalizado" : featured.match_time}
               </span>
             </div>
             <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4, flex:1, minWidth:0 }}>
@@ -121,7 +125,9 @@ export default function Main({ session, profile, onProfileUpdate }) {
       <div style={{ display:"flex", margin:"0 14px 12px", background:"#f5f5f5", borderRadius:12, padding:4, gap:3 }}>
         {NAV.map(n => (
           <button key={n.id} onClick={() => setTab(n.id)}
-            style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:2, padding:"7px 2px", border:"none", borderRadius:9, cursor:"pointer", fontSize:9, fontWeight:700, minHeight:46, justifyContent:"center", background:tab===n.id?"#fff":"transparent", color:tab===n.id?"#111":"#999", boxShadow:tab===n.id?"0 1px 3px rgba(0,0,0,0.08)":"none" }}>
+            style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:2, padding:"7px 2px", border:"none", borderRadius:9, cursor:"pointer", fontSize:9, fontWeight:700, minHeight:46, justifyContent:"center",
+              background:tab===n.id?"#fff":"transparent", color:tab===n.id?"#111":"#999",
+              boxShadow:tab===n.id?"0 1px 3px rgba(0,0,0,0.08)":"none" }}>
             <span style={{ fontSize:16 }}>{n.icon}</span>{n.label}
           </button>
         ))}
@@ -131,7 +137,8 @@ export default function Main({ session, profile, onProfileUpdate }) {
         {tab==="standings" && <Standings profiles={profiles} matches={matches} picks={picks} currentProfile={profile} />}
         {tab==="calendar" && <Calendar days={calDays} myPicks={myPicks} onPicksSaved={handlePicksSaved} userId={session.user.id} />}
         {tab==="history" && <History days={histDays} profiles={profiles} picks={picks} currentProfile={profile} />}
-        {tab==="admin" && <Admin matches={matches} onMatchUpdated={handleMatchUpdated} isAdmin={profile.is_admin} />}
+        {tab==="groups" && <Groups />}
+        {tab==="admin" && profile.is_admin && <Admin matches={matches} onMatchUpdated={handleMatchUpdated} isAdmin={profile.is_admin} />}
       </div>
     </div>
   )
