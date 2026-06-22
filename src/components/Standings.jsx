@@ -7,11 +7,11 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
 
   const totals = profiles.map(p => {
     let total = p.bonus_points || 0
-    let played = 0
+    let played = p.bonus_played || 0
     matches.forEach(m => {
       const pk = picks[p.id]?.[m.id]
       if (pk && m.score_a !== null) { total += calcPts(pk.pick_a, pk.pick_b, m.score_a, m.score_b); played++ }
-      else if (pk) played++
+      else if (pk && m.state === "upcoming") played++
     })
     return { ...p, total, played }
   }).sort((a, b) => b.total - a.total || (a.display_name||"").localeCompare(b.display_name||""))
@@ -49,7 +49,7 @@ export default function Standings({ profiles, matches, picks, currentProfile }) 
                 {p.bonus_points > 0 && (
                   <div style={{ background:"#fff", border:"1px solid #e5e5e5", borderRadius:8, padding:"7px 9px", marginBottom:6 }}>
                     <div style={{ fontSize:10, color:"#aaa", marginBottom:2 }}>⭐ Puntos de migración</div>
-                    <div style={{ fontSize:14, fontWeight:700 }}>{p.bonus_points} pts</div>
+                    <div style={{ fontSize:14, fontWeight:700 }}>{p.bonus_points} pts · {p.bonus_played} PJ</div>
                     <div style={{ fontSize:10, color:"#166534", marginTop:2 }}>Quiniela anterior</div>
                   </div>
                 )}

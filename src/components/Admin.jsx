@@ -12,9 +12,7 @@ export default function Admin({ matches, onMatchUpdated, isAdmin }) {
   const [bonusEdits, setBonusEdits] = useState({})
   const [bonusSaving, setBonusSaving] = useState({})
 
-  useEffect(() => {
-    if (authed) loadProfiles()
-  }, [authed])
+  useEffect(() => { if (authed) loadProfiles() }, [authed])
 
   async function loadProfiles() {
     const { data } = await supabase.from("profiles").select("*").order("display_name")
@@ -22,11 +20,12 @@ export default function Admin({ matches, onMatchUpdated, isAdmin }) {
   }
 
   async function saveBonus(p) {
-    const val = parseInt(bonusEdits[p.id] ?? p.bonus_points ?? 0)
-    if (isNaN(val)) return
+    const pts = parseInt(bonusEdits[p.id]?.pts ?? p.bonus_points ?? 0)
+    const played = parseInt(bonusEdits[p.id]?.played ?? p.bonus_played ?? 0)
+    if (isNaN(pts) || isNaN(played)) return
     setBonusSaving(s => ({ ...s, [p.id]: true }))
-    await supabase.from("profiles").update({ bonus_points: val }).eq("id", p.id)
-    addLog(`Bonus de ${p.display_name||p.username}: ${p.bonus_points||0} → ${val} pts`)
+    await supabase.from("profiles").update({ bonus_points: pts, bonus_played: played }).eq("id", p.id)
+    addLog(`Migración de ${p.display_name||p.username}: ${pts} pts, ${played} PJ`)
     await loadProfiles()
     setBonusSaving(s => ({ ...s, [p.id]: false }))
   }
@@ -89,25 +88,32 @@ export default function Admin({ matches, onMatchUpdated, isAdmin }) {
       <div style={card}>
         <div style={cardHead}>
           <span style={{ fontSize:13, fontWeight:700 }}>🎯 Puntos de migración</span>
-          <span style={{ fontSize:10, color:"#999" }}>Puntos anteriores a la app</span>
+          <span style={{ fontSize:10, color:"#999" }}>Puntos y PJ anteriores</span>
         </div>
         <div style={{ padding:"4px 14px 10px" }}>
-          <div style={{ fontSize:11, color:"#999", padding:"8px 0" }}>
-            Asigná los puntos acumulados de la quiniela anterior a cada jugador registrado.
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 70px 70px 80px", gap:8, padding:"6px 0", borderBottom:"1px solid #f0f0f0" }}>
+            <div style={{ fontSize:10, color:"#999", fontWeight:700 }}>JUGADOR</div>
+            <div style={{ fontSize:10, color:"#999", fontWeight:700, textAlign:"center" }}>PTS</div>
+            <div style={{ fontSize:10, color:"#999", fontWeight:700, textAlign:"center" }}>PJ</div>
+            <div></div>
           </div>
           {profiles.length === 0 && <div style={{ fontSize:12, color:"#bbb", textAlign:"center", padding:"10px 0" }}>Sin jugadores registrados aún</div>}
           {profiles.map(p => (
-            <div key={p.id} style={{ padding:"8px 0", borderBottom:"1px solid #f5f5f5", display:"flex", alignItems:"center", gap:10 }}>
-              <div style={{ flex:1 }}>
+            <div key={p.id} style={{ display:"grid", gridTemplateColumns:"1fr 70px 70px 80px", gap:8, padding:"8px 0", borderBottom:"1px solid #f5f5f5", alignItems:"center" }}>
+              <div>
                 <div style={{ fontSize:13, fontWeight:700 }}>{p.display_name||p.username}</div>
-                <div style={{ fontSize:10, color:"#bbb" }}>@{p.username} · Bonus actual: {p.bonus_points||0} pts</div>
+                <div style={{ fontSize:10, color:"#bbb" }}>@{p.username}</div>
               </div>
               <input type="number" min="0" max="9999"
-                value={bonusEdits[p.id] ?? p.bonus_points ?? 0}
-                onChange={e => setBonusEdits(b => ({ ...b, [p.id]: e.target.value }))}
-                style={{ width:70, textAlign:"center", fontSize:16, fontWeight:700, padding:"6px 4px", border:"1px solid #ddd", borderRadius:8, background:"#fafafa", color:"#111", minHeight:38 }} />
+                value={bonusEdits[p.id]?.pts ?? p.bonus_points ?? 0}
+                onChange={e => setBonusEdits(b => ({ ...b, [p.id]: { ...b[p.id], pts: e.target.value } }))}
+                style={{ width:"100%", textAlign:"center", fontSize:14, fontWeight:700, padding:"6px 4px", border:"1px solid #ddd", borderRadius:8, background:"#fafafa", color:"#111", minHeight:36 }} />
+              <input type="number" min="0" max="999"
+                value={bonusEdits[p.id]?.played ?? p.bonus_played ?? 0}
+                onChange={e => setBonusEdits(b => ({ ...b, [p.id]: { ...b[p.id], played: e.target.value } }))}
+                style={{ width:"100%", textAlign:"center", fontSize:14, fontWeight:700, padding:"6px 4px", border:"1px solid #ddd", borderRadius:8, background:"#fafafa", color:"#111", minHeight:36 }} />
               <button onClick={() => saveBonus(p)} disabled={bonusSaving[p.id]}
-                style={{ padding:"7px 14px", fontSize:12, fontWeight:700, border:"1px solid #ddd", borderRadius:8, cursor:"pointer", background:"#fff", minHeight:38 }}>
+                style={{ padding:"7px 8px", fontSize:12, fontWeight:700, border:"1px solid #ddd", borderRadius:8, cursor:"pointer", background:"#fff", minHeight:36, width:"100%" }}>
                 {bonusSaving[p.id] ? "..." : "Guardar"}
               </button>
             </div>
