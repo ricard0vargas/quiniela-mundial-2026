@@ -36,6 +36,19 @@ export default function Main({ session, profile, onProfileUpdate }) {
   useEffect(() => { loadData() }, [loadData])
 
   useEffect(() => {
+    const hasLive = matches.some(m => m.state === "live")
+    if (!hasLive) return
+    const interval = setInterval(async () => {
+      await fetch("https://idhhznnwndbiddipkecl.supabase.co/functions/v1/sync-scores", {
+        method: "POST",
+        headers: { "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkaGh6bm53bmRiaWRkaXBrZWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNDI4NTksImV4cCI6MjA5NzcxODg1OX0.kno_8z9_7yv6CVFdED1RHL11RCDBr7xSoXDWPBrV37g" }
+      })
+      loadData()
+    }, 20000)
+    return () => clearInterval(interval)
+  }, [matches, loadData])
+
+  useEffect(() => {
     const ch = supabase.channel("quiniela-live")
       .on("postgres_changes", { event:"*", schema:"public", table:"matches" }, loadData)
       .on("postgres_changes", { event:"*", schema:"public", table:"picks" }, loadData)
